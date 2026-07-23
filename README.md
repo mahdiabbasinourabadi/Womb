@@ -140,7 +140,26 @@ On your first complex task, the orchestrator will create:
 
 Open `LEDGER.md` anytime to see exactly where the fleet stands — even after context resets.
 
-### 4. Study the frontier
+### 4. Give the fleet eyes — Playwright runtime lane
+
+Agents that only read code are guessing at runtime behavior. Womb's verification protocol requires UI-changing units to be verified against the **running app** via [Playwright](https://playwright.dev): a worker opens the real page, reads the accessibility snapshot and console errors, and returns a capped digest.
+
+This repo ships a project-level MCP config (`.cursor/mcp.json`) that gives agents browser tools:
+
+```json
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "npx",
+      "args": ["-y", "@playwright/mcp@latest", "--headless"]
+    }
+  }
+}
+```
+
+**Headless is the default.** The orchestrator switches a unit to headed only when the user asks to watch the browser, or when it judges a visible browser serves the task (visual/timing debugging, demoing a finished flow) — remove `--headless` for those sessions. Screenshots and traces are written to `.orchestrator/artifacts/` and referenced by path, never pasted into agent context. See the `runtime_ui_verification` section of the orchestrator template for the full rules.
+
+### 5. Study the frontier
 
 Browse `system_prompts_leaks/` for annotated research on how production AI systems are instructed at the system level. Educational and comparative analysis only.
 
@@ -152,8 +171,12 @@ Browse `system_prompts_leaks/` for annotated research on how production AI syste
 Womb/
 │
 ├── templates/
-│   └── orchestrator-agent.md     # Full orchestrator system prompt (~440 lines)
-│                                 # Fleet registry, verification protocol, brief format
+│   └── orchestrator-agent.md     # Full orchestrator system prompt (~540 lines)
+│                                 # Fleet registry, verification protocol, brief format,
+│                                 # Playwright runtime UI verification lane
+│
+├── .cursor/
+│   └── mcp.json                  # Playwright MCP server (headless) — browser tools for agents
 │
 ├── system_prompts_leaks/
 │   └── Anthropic/

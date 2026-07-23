@@ -18,6 +18,7 @@ credentials.json
 
 # Orchestrator scratch (keep ledger/journal tracked)
 .orchestrator/diffs/
+.orchestrator/artifacts/
 .orchestrator/*.tmp
 
 # Logs
